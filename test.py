@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 
 import unittest
-from enigma import Enigma
+from enigma import Enigma, Rotor, shifting_forward, shifting_backward
 
 rotor_one = {"A":"F","B":"U","C":"J","D":"L","E":"N","F":"M","G":"E","H":"S","I":"A","J":"O","K":"I","L":"B","M":"W","N":"Q","O":"P","P":"H","Q":"G","R":"R","S":"Z","T":"D","U":"C","V":"V","W":"Y","X":"K","Y":"X","Z":"T"}
 
@@ -20,6 +20,7 @@ class TestEnigmaFunctions(unittest.TestCase):
         self.third_rotor_shift = 0
 
     def test_replacement(self):
+        rotor = Rotor()
         encoded_char = Enigma().replacement(self.char, self.first_rotor_shift, self.second_rotor_shift, self.third_rotor_shift)
         self.assertEqual(encoded_char, 'L')
 
@@ -69,63 +70,63 @@ class TestEncodingThirdRotorMove(unittest.TestCase):
 class TestSecondRotorRotation(unittest.TestCase):
     def test_second_rotor_zero(self):
         index = 1
-        result = Enigma().second_rotor_rotation(index)
+        result = Rotor().second_rotor_rotation(index)
         self.assertEqual(result, 0)
 
     def test_second_rotor_zero_another_case(self):
         index = 25
-        result = Enigma().second_rotor_rotation(index)
+        result = Rotor().second_rotor_rotation(index)
         self.assertEqual(result, 0)
 
     def test_second_rotor_rotate_one_letter(self):
         index = 26
-        result = Enigma().second_rotor_rotation(index)
+        result = Rotor().second_rotor_rotation(index)
         self.assertEqual(result, 1)
 
     def test_second_rotor_rotate_one_letter_another_case(self):
         index = 51
-        result = Enigma().second_rotor_rotation(index)
+        result = Rotor().second_rotor_rotation(index)
         self.assertEqual(result, 1) 
     
     def test_second_rotor_rotate_two_letter(self):
         index = 52
-        result = Enigma().second_rotor_rotation(index)
+        result = Rotor().second_rotor_rotation(index)
         self.assertEqual(result, 2) 
         
     def test_second_rotor_rotate_two_letter_another_case(self):
         index = 77
-        result = Enigma().second_rotor_rotation(index)
+        result = Rotor().second_rotor_rotation(index)
         self.assertEqual(result, 2) 
 
 class TestThirdRotorRotation(unittest.TestCase):
     def test_third_rotor_zero(self):
         index = 0
-        result = Enigma().third_rotor_rotation(index)
+        result = Rotor().third_rotor_rotation(index)
         self.assertEqual(result, 0)
 
     def test_third_rotor_zero_another_case(self):
         index = 675
-        result = Enigma().third_rotor_rotation(index)
+        result = Rotor().third_rotor_rotation(index)
         self.assertEqual(result, 0)
 
     def test_third_rotor_rotate_one_letter(self):
         index = 676
-        result = Enigma().third_rotor_rotation(index)
+        result = Rotor().third_rotor_rotation(index)
         self.assertEqual(result, 1)
 
     def test_third_rotor_rotate_one_letter_another_case(self):
         index = 1351
-        result = Enigma().third_rotor_rotation(index)
+        result = Rotor().third_rotor_rotation(index)
         self.assertEqual(result, 1) 
     
     def test_third_rotor_rotate_two_letter(self):
         index = 1352
-        result = Enigma().third_rotor_rotation(index)
+        result = Rotor().third_rotor_rotation(index)
         self.assertEqual(result, 2) 
         
     def test_third_rotor_rotate_two_letter_another_case(self):
         index = 2027
-        result = Enigma().third_rotor_rotation(index)
+        result = Rotor().third_rotor_rotation(index)
         self.assertEqual(result, 2)
 
 if __name__ == '__main__':

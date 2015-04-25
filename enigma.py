@@ -12,17 +12,18 @@ rotor_three = {'A':'V','B':'E','C':'D','D':'Z','E':'U','F':'Y','G':'L','H':'P','
 
 reflector = {'A':'R','B':'X','C':'Z','D':'S','E':'N','F':'V','G':'U','H':'Y','I':'T','J':'W','K':'Q','L':'P','M':'O','N':'E','O':'M','P':'L','Q':'K','R':'A','S':'D','T':'I','U':'G','V':'F','W':'J','X':'B','Y':'H','Z':'C'}
 
-    
-class Enigma(object):
 
-    def shifting_forward(self, char, shift):
-        index = alphabit.find(char)
-        return alphabit[(index+shift)%26]
-        
-    def shifting_backward(self, char, shift):
-        index = alphabit.find(char)
-        return alphabit[(index-shift)%26]
-        
+def shifting_forward(char, shift):
+    index = alphabit.find(char)
+    return alphabit[(index+shift)%26]
+
+
+def shifting_backward(char, shift):
+    index = alphabit.find(char)
+    return alphabit[(index-shift)%26]
+
+
+class Rotor(object):
     def rotor_reversed(self, rotor):
         return dict(zip(rotor.values(), rotor.keys()))
 
@@ -34,34 +35,46 @@ class Enigma(object):
 
     def third_rotor_rotation(self, index):
         return index / 676
-
+    
+class Enigma(object):
     def replacement(self, char, first_rotor_shift, second_rotor_shift, third_rotor_shift):
-        step_one = self.shifting_forward(char, first_rotor_shift)
+        rotor = Rotor()
+        step_one = shifting_forward(char, first_rotor_shift)
         step_two = rotor_one[step_one]
-        step_three = self.shifting_backward(step_two, first_rotor_shift-second_rotor_shift)
+        step_three = shifting_backward(step_two, first_rotor_shift-second_rotor_shift)
         step_four = rotor_two[step_three]
-        step_five = self.shifting_backward(step_four, second_rotor_shift-third_rotor_shift)
+        step_five = shifting_backward(step_four, second_rotor_shift-third_rotor_shift)
         step_six = rotor_three[step_five]
-        step_seven = self.shifting_backward(step_six, third_rotor_shift) 
+        step_seven = shifting_backward(step_six, third_rotor_shift) 
         step_eight = reflector[step_seven]
-        step_nine = self.shifting_forward(step_eight, third_rotor_shift)
-        step_ten =self. rotor_reversed(rotor_three)[step_nine]
-        step_eleven = self.shifting_forward(step_ten, second_rotor_shift-third_rotor_shift)
-        step_twelve = self.rotor_reversed(rotor_two)[step_eleven]
-        step_thirteen = self.shifting_forward(step_twelve, first_rotor_shift-second_rotor_shift)
-        step_forteen = self.rotor_reversed(rotor_one)[step_thirteen]
-        step_fifteen = self.shifting_backward(step_forteen, first_rotor_shift)
+        step_nine = shifting_forward(step_eight, third_rotor_shift)
+        step_ten = rotor.rotor_reversed(rotor_three)[step_nine]
+        step_eleven = shifting_forward(step_ten, second_rotor_shift-third_rotor_shift)
+        step_twelve = rotor.rotor_reversed(rotor_two)[step_eleven]
+        step_thirteen = shifting_forward(step_twelve, first_rotor_shift-second_rotor_shift)
+        step_forteen = rotor.rotor_reversed(rotor_one)[step_thirteen]
+        step_fifteen = shifting_backward(step_forteen, first_rotor_shift)
         return step_fifteen
+
 
     def encode(self, text):
         result = ''
+        rotor = Rotor()
         for i in range(len(text)):
-            first_rotor_shift = self.first_rotor_rotation(i+1)
-            second_rotor_shift = self.second_rotor_rotation(i+1)
-            third_rotor_shift = self.third_rotor_rotation(i+1)
+            first_rotor_shift = rotor.first_rotor_rotation(i+1)
+            second_rotor_shift = rotor.second_rotor_rotation(i+1)
+            third_rotor_shift = rotor.third_rotor_rotation(i+1)
             shift = first_rotor_shift
             result += self.replacement(text[i], first_rotor_shift, second_rotor_shift, third_rotor_shift)                
         return result
 
-            
-            
+
+def main():
+    text = raw_input('Please enter text to encode: ')
+    enigma = Enigma()
+    result = enigma.encode(text)
+    print result
+
+
+if __name__ == '__main__':
+    main()
